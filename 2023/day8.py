@@ -20,7 +20,6 @@ def part1():
                 out = dct[start][0]
             else:
                 out = dct[start][1]
-
             if out == "ZZZ":
                 return index
             else:
@@ -48,7 +47,6 @@ def part2():
                     out = dct[start][0]
                 else:
                     out = dct[start][1]
-
                 if out.endswith("Z"):
                     break
                 else:

@@ -38,7 +38,6 @@ def part2():
     for line in data:
         outs = line.split()
         outs = [int(out) for out in outs]
-        length = len(outs)
         sum += find_poly(outs, -1)
     return sum
 

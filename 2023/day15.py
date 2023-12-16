@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def hash(input):
     total = 0
     for chr in input:

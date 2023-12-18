@@ -1,12 +1,9 @@
-import numpy as np
-
-
 def part1():
     sum = 0
     with open("inputs/day4inp.txt", "r") as file:
         data = file.read().splitlines()
     for line in data:
-        line = line.replace("\n", "").replace("  ", " ")
+        line = line.replace("  ", " ")
         game = line.split(": ")[1]
         winning_nums = game.split(" | ")[0].split(" ")
         drawn_nums = game.split(" | ")[1].split(" ")

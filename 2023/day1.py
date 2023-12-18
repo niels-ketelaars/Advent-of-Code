@@ -22,7 +22,6 @@ def part1():
 
 def part2():
     nums = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-    nums_rev = ["eno", "owt", "eerht", "ruof", "evif", "xis", "neves", "thgie", "enin"]
     with open("inputs/day1inp.txt", "r") as file:
         data = file.read().splitlines()
     sum = 0

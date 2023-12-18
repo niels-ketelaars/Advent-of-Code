@@ -59,13 +59,8 @@ def part2():
         lst.append((r, c))
         current_pipe = next_pipe(data, r, c, entry)
         index += 1
-    area = 0.5 * (
-        sum(
-            [
-                lst[k][0] * lst[k - 1][1] - lst[k][1] * lst[k - 1][0]
-                for k in range(len(lst))
-            ]
-        )
+    area = 0.5 * sum(
+        [lst[k][0] * lst[k - 1][1] - lst[k][1] * lst[k - 1][0] for k in range(len(lst))]
     )  # shoelace formula for area of a polygon
     return int(area) - index // 2 + 1  # Pick's theorem
 

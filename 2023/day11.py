@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def find_distances(data, multiplier):
     galaxies = []
     empty_rows = []
@@ -29,8 +26,8 @@ def find_distances(data, multiplier):
             )
 
             dist = (
-                np.abs(r1 - r2)
-                + np.abs(c1 - c2)
+                abs(r1 - r2)
+                + abs(c1 - c2)
                 + (inbetween_cols + inbetween_rows) * (multiplier - 1)
             )
             sum += int(dist)

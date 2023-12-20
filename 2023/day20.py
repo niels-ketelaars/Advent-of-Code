@@ -4,27 +4,23 @@ from math import lcm
 
 
 @dataclass
-class Broadcaster:
+class BasicGate:
     name: str
     outputs: list[str]
 
 
 @dataclass
-class FlipFlop:
-    name: str
-    outputs: list[str]
+class FlipFlop(BasicGate):
     on: bool
 
 
 @dataclass
-class Conjuction:
-    name: str
+class Conjuction(BasicGate):
     inputs: dict[str, bool]
-    outputs: list[str]
 
 
 def parse(data):
-    dct = {"rx": Broadcaster("rx", [])}
+    dct = {"rx": BasicGate("rx", [])}
     for line in data:
         inp, outs = line.split(" -> ")
         outs = outs.split(", ")
@@ -33,10 +29,10 @@ def parse(data):
             dct[name] = FlipFlop(name, outs, False)
         elif inp[0] == "&":
             name = inp[1:]
-            dct[name] = Conjuction(name, {}, outs)
+            dct[name] = Conjuction(name, outs, {})
         else:
             name = inp
-            dct[name] = Broadcaster(name, outs)
+            dct[name] = BasicGate(name, outs)
 
     for key, gate in dct.items():
         for out in gate.outputs:
@@ -48,22 +44,19 @@ def parse(data):
 
 def pulse(inp, outp, type, dct, queue):
     # print(f"{inp} -{'high' if type else 'low'}-> {outp}")
-    if isinstance(dct[outp], Broadcaster):
-        for o in dct[outp].outputs:
-            queue.append(("broadcaster", o, type))
-    elif isinstance(dct[outp], FlipFlop):
+    if isinstance(dct[outp], FlipFlop):
         if not type:
             for o in dct[outp].outputs:
                 queue.append((outp, o, False if dct[outp].on else True))
             dct[outp].on = not dct[outp].on
     elif isinstance(dct[outp], Conjuction):
         dct[outp].inputs[inp] = type
-        if np.all(list(dct[outp].inputs.values())):
-            sends = False
-        else:
-            sends = True
+        sends = not np.all(list(dct[outp].inputs.values()))
         for o in dct[outp].outputs:
             queue.append((outp, o, sends))
+    else:
+        for o in dct[outp].outputs:
+            queue.append((outp, o, type))
 
 
 def part1():
@@ -72,7 +65,7 @@ def part1():
     dct = parse(data)
 
     total_high, total_low = 0, 0
-    for k in range(1000):
+    for _ in range(1000):
         queue = [("button", "broadcaster", False)]
         while queue != []:
             node = queue.pop(0)
@@ -90,18 +83,17 @@ def part2():
     dct = parse(data)
 
     index = 0
-    loops = {key: [] for key in ["kk", "xc", "sk", "vt"]}
+    loops = {}
     while True:
         queue = [("button", "broadcaster", False)]
         index += 1
         while queue != []:
             node = queue.pop(0)
-            if node[0] in loops and node[2]:
-                loops[node[0]].append(index)
+            if node[0] in ["kk", "xc", "sk", "vt"] and node[2] and node[0] not in loops:
+                loops[node[0]] = index
             pulse(*node, dct, queue)
-        if np.all([len(indices) >= 2 for indices in loops.values()]):
-            loop_lengths = [indices[1] - indices[0] for indices in loops.values()]
-            return lcm(*loop_lengths)
+        if len(loops) == 4:
+            return lcm(*loops.values())
 
 
 if __name__ == "__main__":

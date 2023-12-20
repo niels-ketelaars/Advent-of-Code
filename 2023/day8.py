@@ -55,9 +55,9 @@ def part2():
                 continue
             break
         indices.append(index)
-    return indices
+    return lcm(*indices)
 
 
 if __name__ == "__main__":
     print(part1())
-    print(lcm(*part2()))
+    print(part2())

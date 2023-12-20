@@ -1,6 +1,4 @@
-def solve(part_two):
-    with open("inputs/day18inp.txt", "r") as file:
-        data = file.read().splitlines()
+def solve(data, part_two):
     coord = (0, 0)
     coords = [coord]
     total = 0
@@ -34,11 +32,15 @@ def solve(part_two):
 
 
 def part1():
-    return solve(False)
+    with open("inputs/day18inp.txt", "r") as file:
+        data = file.read().splitlines()
+    return solve(data, False)
 
 
 def part2():
-    return solve(True)
+    with open("inputs/day18inp.txt", "r") as file:
+        data = file.read().splitlines()
+    return solve(data, True)
 
 
 if __name__ == "__main__":

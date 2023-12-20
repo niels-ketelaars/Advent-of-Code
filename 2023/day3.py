@@ -1,9 +1,7 @@
 import numpy as np
 
 
-def solve(part_two):
-    with open("inputs/day3inp.txt", "r") as file:
-        data = file.read().splitlines()
+def solve(data, part_two):
     sum = 0
     length = len(data)
     uber_dict = {}
@@ -60,11 +58,15 @@ def solve(part_two):
 
 
 def part1():
-    return solve(False)
+    with open("inputs/day3inp.txt", "r") as file:
+        data = file.read().splitlines()
+    return solve(data, False)
 
 
 def part2():
-    uber_dict = solve(True)
+    with open("inputs/day3inp.txt", "r") as file:
+        data = file.read().splitlines()
+    uber_dict = solve(data, True)
     sum = 0
     for nums in uber_dict.values():
         if len(nums) == 2:

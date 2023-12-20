@@ -1,17 +1,18 @@
 import numpy as np
 from dataclasses import dataclass
+from typing import ClassVar
 from collections import Counter
 
 
-@dataclass(frozen=True)
-class hand:
+@dataclass
+class Hand:
     cards: str
     bid: int
+    order_cards: ClassVar[np.ndarray[str]] = np.array(
+        ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"]
+    )
 
     def __lt__(self, other):
-        order_cards = np.array(
-            ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"]
-        )
         if self.hand_type() < other.hand_type():
             return True
         elif self.hand_type() == other.hand_type():
@@ -19,8 +20,8 @@ class hand:
                 if self.cards[i] == other.cards[i]:
                     continue
                 elif (
-                    np.argwhere(order_cards == self.cards[i])[0, 0]
-                    > np.argwhere(order_cards == other.cards[i])[0, 0]
+                    np.argwhere(self.order_cards == self.cards[i])[0, 0]
+                    > np.argwhere(self.order_cards == other.cards[i])[0, 0]
                 ):
                     return True
                 else:
@@ -47,72 +48,44 @@ class hand:
             return 0
 
 
-@dataclass(frozen=True)
-class hand_joker:
-    cards: str
-    bid: int
-
-    def __lt__(self, other):
-        order_cards = np.array(
-            ["A", "K", "Q", "T", "9", "8", "7", "6", "5", "4", "3", "2", "J"]
-        )
-        if self.hand_type() < other.hand_type():
-            return True
-        elif self.hand_type() == other.hand_type():
-            for i in range(len(self.cards)):
-                if self.cards[i] == other.cards[i]:
-                    continue
-                elif (
-                    np.argwhere(order_cards == self.cards[i])[0, 0]
-                    > np.argwhere(order_cards == other.cards[i])[0, 0]
-                ):
-                    return True
-                else:
-                    return False
-            return False
-        else:
-            return False
+@dataclass
+class HandJoker(Hand):
+    order_cards: ClassVar[np.ndarray[str]] = np.array(
+        ["A", "K", "Q", "T", "9", "8", "7", "6", "5", "4", "3", "2", "J"]
+    )
 
     def hand_type(self):
-        order_cards = np.array(
-            ["A", "K", "Q", "T", "9", "8", "7", "6", "5", "4", "3", "2"]
-        )
         possibilites = []
-        for chr in order_cards:
+        for chr in self.order_cards[:-1]:
             new_cards = self.cards.replace("J", chr)
-            new_hand = hand(new_cards, self.bid)
+            new_hand = Hand(new_cards, self.bid)
             possibilites.append(new_hand.hand_type())
         return np.max(possibilites)
+
+
+def solve(data, part_two):
+    hands = []
+    for line in data:
+        line = line.split()
+        cards = line[0]
+        bid = int(line[1])
+        hand = HandJoker(cards, bid) if part_two else Hand(cards, bid)
+        hands.append(hand)
+    sorted = np.sort(hands)
+    total = sum(sorted[k].bid * (k + 1) for k in range(len(sorted)))
+    return total
 
 
 def part1():
     with open("inputs/day7inp.txt", "r") as file:
         data = file.read().splitlines()
-    hands = []
-    for line in data:
-        line = line.split()
-        cards = line[0]
-        bid = int(line[1])
-        hand_ = hand(cards, bid)
-        hands.append(hand_)
-    sorted = np.sort(hands)
-    total = sum(sorted[k].bid * (k + 1) for k in range(len(sorted)))
-    return total
+    return solve(data, False)
 
 
 def part2():
     with open("inputs/day7inp.txt", "r") as file:
         data = file.read().splitlines()
-    hands = []
-    for line in data:
-        line = line.split()
-        cards = line[0]
-        bid = int(line[1])
-        hand_ = hand_joker(cards, bid)
-        hands.append(hand_)
-    sorted = np.sort(hands)
-    total = sum(sorted[k].bid * (k + 1) for k in range(len(sorted)))
-    return total
+    return solve(data, True)
 
 
 if __name__ == "__main__":

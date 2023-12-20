@@ -1,9 +1,7 @@
 import heapq
 
 
-def dijkstra(part_two):
-    with open("inputs/day17inp.txt", "r") as file:
-        data = file.read().splitlines()
+def dijkstra(data, part_two):
     length = len(data)
     width = len(data[0])
     queue = [(0, 0, 0, "", 0)]
@@ -45,11 +43,15 @@ def dijkstra(part_two):
 
 
 def part1():
-    return dijkstra(False)
+    with open("inputs/day17inp.txt", "r") as file:
+        data = file.read().splitlines()
+    return dijkstra(data, False)
 
 
 def part2():
-    return dijkstra(True)
+    with open("inputs/day17inp.txt", "r") as file:
+        data = file.read().splitlines()
+    return dijkstra(data, True)
 
 
 if __name__ == "__main__":

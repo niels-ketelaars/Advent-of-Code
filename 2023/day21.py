@@ -33,12 +33,12 @@ def part2():
         data = file.read().splitlines()
     big_data = [line * 5 for line in data] * 5
     w = len(data)
-    r, c = (65 + w * 2,) * 2
+    r = 65 + w * 2
 
     # if f(x) denotes number of possibilities after 65+131*x steps, then f is quadratic
-    f1 = possibilities(big_data, r, c, 65)
-    f2 = possibilities(big_data, r, c, 65 + w)
-    f3 = possibilities(big_data, r, c, 65 + w * 2)
+    f1 = possibilities(big_data, r, r, 65)
+    f2 = possibilities(big_data, r, r, 65 + w)
+    f3 = possibilities(big_data, r, r, 65 + w * 2)
 
     x = (26501365 - 65) // w
     return int(
